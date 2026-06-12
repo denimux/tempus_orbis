@@ -28,4 +28,10 @@ La obra traslada el concepto estético del tiempo esférico, donde pasado y futu
 4. **Reinicio:** Al desvanecerse el texto, el sistema prepara una nueva combinación azarosa, clausurando el recorrido sin ofrecer un cierre definitivo.
 
 ---
+
+## Sobre el carácter oracular del dispositivo
+
+*Tempus orbis* recupera la dimensión oracular entendida no como un ejercicio adivinatorio, sino como un fenómeno de sincronía y proyección existencial a través de la aleatoriedad algorítmica. Al carecer de una progresión lineal, el output no funciona como una crónica, sino como un espejo que interroga la conciencia del usuario. El sistema no clasifica ni diagnostica ni pretende ofrecer algún tipo de respuesta consciente; en su lugar, la combinación azarosa de enunciados opera como un espacio de confrontación subjetiva donde el sentido no está predeterminado, sino latente. Es la propia temporalidad del lector, su contexto y su experiencia,  la que dota de orden, destino y revelación a los puntos dispersos de la esfera temporal.
+
+---
 *Este dispositivo se distribuye bajo fines artísticos y de investigación en el campo de la creación literaria digital.*
