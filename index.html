@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempus orbis</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #e0e0e0;
+            --accent-color: #666;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            user-select: none; /* Bloqueo de selección */
+            -webkit-user-select: none;
+        }
+
+        #canvas {
+            max-width: 600px;
+            text-align: center;
+            padding: 20px;
+            transition: filter 0.5s ease;
+        }
+
+        .frase {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        #diagnostico {
+            margin-top: 40px;
+            font-style: italic;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .bruma {
+            filter: blur(8px);
+        }
+
+        #btn-iniciar {
+            background: none;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+
+        #btn-iniciar:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        #footer-propina {
+            position: fixed;
+            bottom: 20px;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;"> <!-- Bloqueo clic derecho -->
+
+    <div id="canvas">
+        <button id="btn-iniciar" onclick="comenzarExperiencia()">ENTRAR AL BUCLE</button>
+        <div id="contenedor-frases"></div>
+        <div id="diagnostico"></div>
+    </div>
+
+    <div id="footer-propina">
+        <a href="https://www.buymeacoffee.com/" target="_blank" style="color: #666; text-decoration: none; font-size: 0.8rem;">
+            Si esta atmósfera te ha conmovido, invita un café para mantener el tiempo girando.
+        </a>
+    </div>
+
+    <script>
+        const mazo = [
+            { t: "Esperando, en el mismo lugar de siempre.", e: 3 },
+            { t: "Sientes inquietud pero no te mueves de donde estás.", e: 3 },
+            { t: "Sientes una mirada en la nuca que te eriza la piel. Volteas.", e: 3 },
+            { t: "Quien se encuentra ante ti, eres tú.", e: 1 },
+            { t: "Tal vez una imagen residual de lo que fuiste o lo que serás.", e: 1 },
+            { t: "Tienes preguntas.", e: 1 },
+            { t: "Tus recuerdos te acorralan entretejiéndose unos con otros.", e: 2 },
+            { t: "El peso de lo que has vivido y te falta por vivir ha caído sobre ti.", e: 2 },
+            { t: "Miras a través de sus ojos y el entorno se convierte en bruma.", e: 1 },
+            { t: "Te sientes inseguro acerca de las decisiones que has tomado.", e: 3 },
+            { t: "Pero eso no te detendrá de seguir adelante.", e: 3 },
+            { t: "Así será el camino: una sucesión de decisiones erradas.", e: 3 },
+            { t: "Entorna los ojos frente a ti, como tratando de reconocerte.", e: 1 },
+            { t: "Dudas.", e: 3 },
+            { t: "Cuando te acercas un paso, retrocede dos.", e: 3 },
+            { t: "Te preguntas el por qué de tanto temor.", e: 3 },
+            { t: "Recuerdas la calidez del entorno, la belleza del paisaje.", e: 4 },
+            { t: "Te invade la nostalgia.", e: 4 },
+            { t: "El destino irreductible se cierne ahora ante ti.", e: 3 },
+            { t: "Debes decidir e hilar un camino de nuevas decisiones.", e: 3 },
+            { t: "Tienes un destino en mente, aunque las motivaciones son insuficientes.", e: 3 },
+            { t: "Tienes que caminar hacia atrás del tiempo.", e: 2 },
+            { t: "Ya sabes el camino y a dónde te conducirá.", e: 2 },
+            { t: "Para avanzar, es preciso retroceder sobre tus propios pasos.", e: 2 },
+            { t: "Te aferras a un recuerdo y a uno solo.", e: 4 },
+            { t: "Un recuerdo de ti, amando.", e: 4 },
+            { t: "El amor es la soga que te sacará de este laberinto.", e: 4 },
+            { t: "Amaste la idea que tenías de todo. Nada fue real.", e: 4 },
+            { t: "Un sosiego momentáneo calma tu corazón.", e: 5 },
+            { t: "Tu mirada aún tiene un destino.", e: 5 },
+            { t: "Cada mirada abre un camino a un horizonte que ya conoces.", e: 2 },
+            { t: "Puedes mirarte a ti mismo hasta que sea una ilusión.", e: 1 },
+            { t: "No eres un individuo. No eres independiente.", e: 1 },
+            { t: "Eres todo con todos, con lo demás y con lo otro también.", e: 1 },
+            { t: "No puedes mirar tus manos, no puedes sentir tu cuerpo.", e: 5 },
+            { t: "Has soltado el peso de la existencia.", e: 5 },
+            { t: "Llevas contigo la auténtica duda de saber quiénes somos.", e: 5 },
+            { t: "No tienes idea de cómo has llegado.", e: 1 },
+            { t: "Hay una revelación ante ti.", e: 3 },
+            { t: "El tiempo no es lo que creíste.", e: 2 },
+            { t: "Creer es crear.", e: 1 },
+            { t: "Aquí la muerte no existe.", e: 5 },
+            { t: "No hay inicio ni fin.", e: 2 },
+            { t: "Te preguntas cuál es la naturaleza del tiempo.", e: 2 },
+            { t: "Existes en este instante, luego te irás con él.", e: 5 },
+            { t: "Miras hacia arriba, miras hacia abajo; nada tiene sentido.", e: 3 }
+            // Nota: Se pueden añadir las frases restantes siguiendo el formato { t: "Texto", e: eje }
+        ];
+
+        async function comenzarExperiencia() {
+            document.getElementById('btn-iniciar').style.display = 'none';
+            const seleccionadas = mazo.sort(() => 0.5 - Math.random()).slice(0, 8);
+            const conteo = { 1:0, 2:0, 3:0, 4:0, 5:0 };
+            
+            for (let i = 0; i < seleccionadas.length; i++) {
+                conteo[seleccionadas[i].e]++;
+                const p = document.createElement('p');
+                p.className = 'frase';
+                p.innerText = seleccionadas[i].t;
+                document.getElementById('contenedor-frases').appendChild(p);
+                await new Promise(r => setTimeout(r, 100)); 
+                p.style.opacity = 1;
+                await new Promise(r => setTimeout(r, 4000)); // Tiempo de lectura
+            }
+
+            mostrarDiagnostico(conteo);
+        }
+
+        function mostrarDiagnostico(c) {
+            let d = "";
+            const maxVal = Math.max(...Object.values(c));
+            const ejesMax = Object.keys(c).filter(x => c[x] == maxVal);
+
+            // Lógica simplificada de los 14 diagnósticos
+            if (c[4] >= 3) d = "Tu tiempo es un círculo que se estrecha...";
+            else if (c[3] >= 3) d = "Tu camino se construye con el eco de tus pasos errados...";
+            else if (c[1] >= 3) d = "Quien te mira desde el fondo no es un extraño, eres tú...";
+            else if (c[2] >= 3) d = "Estás atrapado en una red de recuerdos futuros...";
+            else if (c[5] >= 3) d = "Has soltado el peso de la existencia...";
+            else d = "Has despertado en el centro del mazo. No hay inicio ni fin...";
+
+            const diagElement = document.getElementById('diagnostico');
+            diagElement.innerText = d;
+            diagElement.style.opacity = 1;
+            document.getElementById('footer-propina').style.opacity = 1;
+        }
+
+        // Efecto Bruma si intentan copiar
+        window.addEventListener('keydown', e => {
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's')) {
+                document.getElementById('canvas').classList.add('bruma');
+                setTimeout(() => document.getElementById('canvas').classList.remove('bruma'), 1000);
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
