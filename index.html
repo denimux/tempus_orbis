@@ -61,6 +61,25 @@
             filter: blur(8px);
         }
 
+        /* Botón de control de audio flotante y minimalista */
+        #control-audio {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: #666;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 20;
+            transition: color 0.3s ease;
+            padding: 10px;
+        }
+        
+        #control-audio:hover {
+            color: #fff;
+        }
+
         /* ==========================================================================
         DISEÑO RESPONSIVO PARA PANTALLAS PEQUEÑAS (MÓVILES)
         ========================================================================== */
@@ -80,12 +99,19 @@
                 margin-top: 1.8rem;        
                 font-size: 0.85rem;        
             }
+
+            #control-audio {
+                top: 15px;
+                right: 15px;
+            }
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <audio id="musica-atmosfera" loop src="Tempus-orbit.mp3"></audio>
+
+    <button id="control-audio" onclick="alternarAudio()" title="Silenciar / Activar atmósfera">🔇</button>
 
     <div id="pantalla-inicio" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; background-color: #000; color: #fff; font-family: 'Georgia', serif; text-align: center; padding: 20px; box-sizing: border-box; position: absolute; top: 0; left: 0; z-index: 10;">
         
@@ -98,7 +124,7 @@
         </p>
         
         <button onclick="iniciarDispositivo()" style="background: transparent; border: 1px solid #fff; color: #fff; padding: 12px 24px; font-size: 0.9rem; letter-spacing: 0.2em; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;">
-            Entrar
+            Entrar a la esfera
         </button>
 
     </div>
@@ -141,7 +167,7 @@
             { t: "Un sosiego momentáneo calma tu corazón.", e: 5 },
             { t: "Tu mirada aún tiene un destino.", e: 5 },
             { t: "Cada mirada abre un camino a un horizonte que ya conoces.", e: 2 },
-            { t: "Puedes mirarte a ti mismo hasta que sea una ilusión.", e: 1 },
+            { t: "Puedes mirarte a ti mismo hasta que sea una illusion.", e: 1 },
             { t: "No eres un individuo. No eres independiente.", e: 1 },
             { t: "Eres todo con todos, con lo demás y con lo otro también.", e: 1 },
             { t: "No puedes mirar tus manos, no puedes sentir tu cuerpo.", e: 5 },
@@ -159,11 +185,21 @@
         ];
 
         async function iniciarDispositivo() {
-            // Disparador de la atmósfera sonora tras la interacción del usuario
-            const audio = document.getElementById('musica-atmosphere');
+            const audio = document.getElementById('musica-atmosfera');
+            const botonAudio = document.getElementById('control-audio');
+            
             if (audio) {
-                audio.volume = 0.4; // Nivel de volumen sutil
-                audio.play().catch(err => console.log("El navegador bloqueó el inicio del audio:", err));
+                audio.volume = 0.4;
+                audio.play()
+                    .then(() => {
+                        // Si el navegador permite reproducirlo, actualizamos el icono a encendido
+                        botonAudio.innerText = "🔊";
+                    })
+                    .catch(err => {
+                        console.log("El navegador bloqueó el inicio automático del audio:", err);
+                        // Si se bloquea, el icono se queda en mute esperando a que el usuario le pique voluntariamente
+                        botonAudio.innerText = "🔇";
+                    });
             }
 
             // Oculta la pantalla de inicio
@@ -196,7 +232,6 @@
             const maxVal = Math.max(...Object.values(c));
             const ejesMax = Object.keys(c).filter(x => c[x] == maxVal);
 
-            // Remates conceptuales purgados y adaptados a la esfericidad temporal
             if (c[4] >= 3) d = "Tu tiempo es una esfera que se estrecha dentro de tu mente...";
             else if (c[3] >= 3) d = "Tu camino se construye con el eco de tus pasos que regresan al futuro...";
             else if (c[1] >= 3) d = "Quien te mira desde el fondo no es un extraño, eres tú... ¿Quién eres?";
@@ -205,11 +240,23 @@
             else d = "Has despertado en el centro. Ahora conoces la naturaleza del tiempo. No hay inicio ni fin...";
 
             const diagElement = document.getElementById('diagnostico');
-    
-            // Inyección de la etiqueta paratextual oracular
             diagElement.innerHTML = `<span style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: #666; margin-bottom: 10px; font-style: normal;">Revelación</span>${d}`;
-            
             diagElement.style.opacity = 1;
+        }
+
+        // Función interactiva para prender/apagar la música a voluntad
+        function alternarAudio() {
+            const audio = document.getElementById('musica-atmosfera');
+            const botonAudio = document.getElementById('control-audio');
+            
+            if (audio.paused) {
+                audio.volume = 0.4;
+                audio.play();
+                botonAudio.innerText = "🔊";
+            } else {
+                audio.pause();
+                botonAudio.innerText = "🔇";
+            }
         }
 
         // Interceptores reactivos contra copia (Efecto bruma)
