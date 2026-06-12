@@ -61,19 +61,19 @@
             filter: blur(8px);
         }
 
-        /* Botón de control de audio flotante y minimalista */
+        /* Botón de control de audio centrado y estético */
         #control-audio {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             background: transparent;
             border: none;
-            color: #666;
-            font-size: 1.2rem;
+            color: #555;
+            font-family: 'Georgia', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
             cursor: pointer;
-            z-index: 20;
+            margin-top: 25px; /* Separación armónica abajo del botón principal */
             transition: color 0.3s ease;
-            padding: 10px;
+            padding: 10px 20px;
         }
         
         #control-audio:hover {
@@ -99,19 +99,12 @@
                 margin-top: 1.8rem;        
                 font-size: 0.85rem;        
             }
-
-            #control-audio {
-                top: 15px;
-                right: 15px;
-            }
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <audio id="musica-atmosfera" loop src="Tempus-orbit.mp3"></audio>
-
-    <button id="control-audio" onclick="alternarAudio()" title="Silenciar / Activar atmósfera">🔇</button>
 
     <div id="pantalla-inicio" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; background-color: #000; color: #fff; font-family: 'Georgia', serif; text-align: center; padding: 20px; box-sizing: border-box; position: absolute; top: 0; left: 0; z-index: 10;">
         
@@ -126,6 +119,8 @@
         <button onclick="iniciarDispositivo()" style="background: transparent; border: 1px solid #fff; color: #fff; padding: 12px 24px; font-size: 0.9rem; letter-spacing: 0.2em; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;">
             Entrar a la esfera
         </button>
+
+        <button id="control-audio" onclick="alternarAudio()" title="Silenciar / Activar atmósfera">Atmósfera: Off</button>
 
     </div>
 
@@ -192,20 +187,16 @@
                 audio.volume = 0.4;
                 audio.play()
                     .then(() => {
-                        // Si el navegador permite reproducirlo, actualizamos el icono a encendido
-                        botonAudio.innerText = "🔊";
+                        botonAudio.innerText = "Atmósfera: On";
                     })
                     .catch(err => {
-                        console.log("El navegador bloqueó el inicio automático del audio:", err);
-                        // Si se bloquea, el icono se queda en mute esperando a que el usuario le pique voluntariamente
-                        botonAudio.innerText = "🔇";
+                        console.log("El navegador restringió el autoplay:");
+                        botonAudio.innerText = "Atmósfera: Off";
                     });
             }
 
-            // Oculta la pantalla de inicio
             document.getElementById('pantalla-inicio').style.display = 'none';
             
-            // Selección aleatoria de 8 frases fijas dentro de la totalidad
             const seleccionadas = mazo.sort(() => 0.5 - Math.random()).slice(0, 8);
             const conteo = { 1:0, 2:0, 3:0, 4:0, 5:0 };
             
@@ -216,11 +207,9 @@
                 p.innerText = seleccionadas[i].t;
                 document.getElementById('contenedor-frases').appendChild(p);
                 
-                // Animación rítmica de entrada
                 await new Promise(r => setTimeout(r, 50)); 
                 p.style.opacity = 1;
                 
-                // Intervalo de lectura para cada enunciado
                 await new Promise(r => setTimeout(r, 4000)); 
             }
 
@@ -244,7 +233,6 @@
             diagElement.style.opacity = 1;
         }
 
-        // Función interactiva para prender/apagar la música a voluntad
         function alternarAudio() {
             const audio = document.getElementById('musica-atmosfera');
             const botonAudio = document.getElementById('control-audio');
@@ -252,14 +240,13 @@
             if (audio.paused) {
                 audio.volume = 0.4;
                 audio.play();
-                botonAudio.innerText = "🔊";
+                botonAudio.innerText = "Atmósfera: On";
             } else {
                 audio.pause();
-                botonAudio.innerText = "🔇";
+                botonAudio.innerText = "Atmósfera: Off";
             }
         }
 
-        // Interceptores reactivos contra copia (Efecto bruma)
         window.addEventListener('keydown', e => {
             if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's')) {
                 document.getElementById('canvas').classList.add('bruma');
