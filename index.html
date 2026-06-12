@@ -62,32 +62,32 @@
         }
 
         /* ==========================================================================
-       DISEÑO RESPONSIVO PARA PANTALLAS PEQUEÑAS (MÓVILES)
-       ========================================================================== */
+        DISEÑO RESPONSIVO PARA PANTALLAS PEQUEÑAS (MÓVILES)
+        ========================================================================== */
         @media (max-width: 768px) {
-            /* Ajustamos el contenedor principal para que tenga un margen de seguridad a los lados */
             body {
                 padding: 0 20px;
                 box-sizing: border-box;
             }
         
-            /* Compactamos sutilmente las frases sembradas en el celular */
             .frase-sembrada {
-                font-size: 0.8rem;         /* Letra un poco más pequeña pero perfectamente legible */
-                line-height: 1.35;         /* Interlineado ligeramente más cerrado */
-                margin-bottom: 0.9rem;     /* Reducimos el aire entre frases para ganar espacio vertical */
+                font-size: 0.8rem;         
+                line-height: 1.35;         
+                margin-bottom: 0.9rem;     
             }
         
-            /* Ajustamos el remate final para que no quede apretado abajo */
             #diagnostico {
-                margin-top: 1.8rem;        /* Separación armónica respecto al bloque de texto */
-                font-size: 0.85rem;        /* Tamaño equilibrado para la Revelación */
+                margin-top: 1.8rem;        
+                font-size: 0.85rem;        
             }
         }
-    
     </style>
 </head>
-<body oncontextmenu="return false;"> <div id="pantalla-inicio" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; background-color: #000; color: #fff; font-family: 'Georgia', serif; text-align: center; padding: 20px; box-sizing: border-box; position: absolute; top: 0; left: 0; z-index: 10;">
+<body oncontextmenu="return false;">
+
+    <audio id="musica-atmosfera" loop src="Tempus-orbit.mp3"></audio>
+
+    <div id="pantalla-inicio" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; background-color: #000; color: #fff; font-family: 'Georgia', serif; text-align: center; padding: 20px; box-sizing: border-box; position: absolute; top: 0; left: 0; z-index: 10;">
         
         <h1 style="font-size: 2.5rem; font-weight: 300; letter-spacing: 0.15em; margin-bottom: 10px; text-transform: uppercase; color: #e0e0e0;">
             Tempus orbis
@@ -97,15 +97,14 @@
             Tú eres este instante.
         </p>
         
-        <button onclick="iniciarBucle()" style="background: transparent; border: 1px solid #fff; color: #fff; padding: 12px 24px; font-size: 0.9rem; letter-spacing: 0.2em; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;">
-            Entrar al bucle
+        <button onclick="iniciarDispositivo()" style="background: transparent; border: 1px solid #fff; color: #fff; padding: 12px 24px; font-size: 0.9rem; letter-spacing: 0.2em; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;">
+            Entrar
         </button>
 
     </div>
 
     <div id="canvas">
         <div id="contenedor-frases"></div>
-        
         <div id="diagnostico"></div>
     </div>
 
@@ -120,7 +119,7 @@
             { t: "Tus recuerdos te acorralan entretejiéndose unos con otros.", e: 2 },
             { t: "El peso de lo que has vivido y te falta por vivir ha caído sobre ti.", e: 2 },
             { t: "Miras a través de sus ojos y el entorno se convierte en bruma.", e: 1 },
-            { t: "Te sientes inseguro acerca de las decisiones que has tomado.", e: 3 },
+            { t: "Te sientes insecure acerca de las decisiones que has tomado.", e: 3 },
             { t: "Pero eso no te detendrá de seguir adelante.", e: 3 },
             { t: "Así será el camino: una sucesión de decisiones erradas.", e: 3 },
             { t: "Entorna los ojos frente a ti, como tratando de reconocerte.", e: 1 },
@@ -159,11 +158,18 @@
             { t: "Miras hacia arriba, miras hacia abajo; nada tiene sentido.", e: 3 }
         ];
 
-        async function iniciarBucle() {
+        async function iniciarDispositivo() {
+            // Disparador de la atmósfera sonora tras la interacción del usuario
+            const audio = document.getElementById('musica-atmosphere');
+            if (audio) {
+                audio.volume = 0.4; // Nivel de volumen sutil
+                audio.play().catch(err => console.log("El navegador bloqueó el inicio del audio:", err));
+            }
+
             // Oculta la pantalla de inicio
             document.getElementById('pantalla-inicio').style.display = 'none';
             
-            // Selección aleatoria de 8 frases fijas
+            // Selección aleatoria de 8 frases fijas dentro de la totalidad
             const seleccionadas = mazo.sort(() => 0.5 - Math.random()).slice(0, 8);
             const conteo = { 1:0, 2:0, 3:0, 4:0, 5:0 };
             
@@ -184,28 +190,29 @@
 
             mostrarDiagnostico(conteo);
         }
-                function mostrarDiagnostico(c) {
-                    let d = "";
-                    const maxVal = Math.max(...Object.values(c));
-                    const ejesMax = Object.keys(c).filter(x => c[x] == maxVal);
-        
-                    // Remates conceptuales según dominancia
-                    if (c[4] >= 3) d = "Tu tiempo es un círculo que se estrecha dentro de tu mente...";
-                    else if (c[3] >= 3) d = "Tu camino se construye con el eco de tus pasos que regresan al futuro...";
-                    else if (c[1] >= 3) d = "Quien te mira desde el fondo no es un extraño, eres tú... ¿Quién eres?";
-                    else if (c[2] >= 3) d = "Estás atrapado en una red de recuerdos futuros del pasado...";
-                    else if (c[5] >= 3) d = "Has soltado el peso de la existencia, ahora eres en el tiempo...";
-                    else d = "Has despertado en el centro. Ahora conoces la naturaleza del tiempo. No hay inicio ni fin...";
-        
-                    const diagElement = document.getElementById('diagnostico');
+
+        function mostrarDiagnostico(c) {
+            let d = "";
+            const maxVal = Math.max(...Object.values(c));
+            const ejesMax = Object.keys(c).filter(x => c[x] == maxVal);
+
+            // Remates conceptuales purgados y adaptados a la esfericidad temporal
+            if (c[4] >= 3) d = "Tu tiempo es una esfera que se estrecha dentro de tu mente...";
+            else if (c[3] >= 3) d = "Tu camino se construye con el eco de tus pasos que regresan al futuro...";
+            else if (c[1] >= 3) d = "Quien te mira desde el fondo no es un extraño, eres tú... ¿Quién eres?";
+            else if (c[2] >= 3) d = "Estás atrapado en una red de recuerdos futuros del pasado...";
+            else if (c[5] >= 3) d = "Has soltado el peso de la existencia, ahora eres en el tiempo...";
+            else d = "Has despertado en el centro. Ahora conoces la naturaleza del tiempo. No hay inicio ni fin...";
+
+            const diagElement = document.getElementById('diagnostico');
+    
+            // Inyección de la etiqueta paratextual oracular
+            diagElement.innerHTML = `<span style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: #666; margin-bottom: 10px; font-style: normal;">Revelación</span>${d}`;
             
-                // Aquí añadimos la etiqueta poética "Revelación:" antes del texto obtenido
-                diagElement.innerHTML = `<span style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: #666; margin-bottom: 10px; font-style: normal;">Revelación</span>${d}`;
-                
-                diagElement.style.opacity = 1;
+            diagElement.style.opacity = 1;
         }
 
-        // Interceptores reactivos contra copia
+        // Interceptores reactivos contra copia (Efecto bruma)
         window.addEventListener('keydown', e => {
             if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's')) {
                 document.getElementById('canvas').classList.add('bruma');
