@@ -160,23 +160,25 @@
 
             mostrarDiagnostico(conteo);
         }
-
-        function mostrarDiagnostico(c) {
-            let d = "";
-            const maxVal = Math.max(...Object.values(c));
-            const ejesMax = Object.keys(c).filter(x => c[x] == maxVal);
-
-            // Remates conceptuales según dominancia
-            if (c[4] >= 3) d = "Tu tiempo es un círculo que se estrecha en el interior de tu mente...";
-            else if (c[3] >= 3) d = "Tu camino se construye con el eco de tus pasos, éstos también se disolverán...";
-            else if (c[1] >= 3) d = "Quien te mira desde el fondo no es un extraño, eres tú...";
-            else if (c[2] >= 3) d = "Estás atrapado en una red de recuerdos futuros que ya no existen...";
-            else if (c[5] >= 3) d = "Has soltado tu concepto del ser, ahora estás en el núcleo del tiempo...";
-            else d = "Has despertado en el centro. El tiempo no es como creías. No hay inicio ni fin...";
-
-            const diagElement = document.getElementById('diagnostico');
-            diagElement.innerText = d;
-            diagElement.style.opacity = 1;
+                function mostrarDiagnostico(c) {
+                    let d = "";
+                    const maxVal = Math.max(...Object.values(c));
+                    const ejesMax = Object.keys(c).filter(x => c[x] == maxVal);
+        
+                    // Remates conceptuales según dominancia
+                    if (c[4] >= 3) d = "Tu tiempo es un círculo que se estrecha...";
+                    else if (c[3] >= 3) d = "Tu camino se construye con el eco de tus pasos errados...";
+                    else if (c[1] >= 3) d = "Quien te mira desde el fondo no es un extraño, eres tú...";
+                    else if (c[2] >= 3) d = "Estás atrapado en una red de recuerdos futuros...";
+                    else if (c[5] >= 3) d = "Has soltado el peso de la existencia...";
+                    else d = "Has despertado en el centro del mazo. No hay inicio ni fin...";
+        
+                    const diagElement = document.getElementById('diagnostico');
+            
+                // Aquí añadimos la etiqueta poética "Revelación:" antes del texto obtenido
+                diagElement.innerHTML = `<span style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: #666; margin-bottom: 10px; font-style: normal;">Revelación</span>${d}`;
+                
+                diagElement.style.opacity = 1;
         }
 
         // Interceptores reactivos contra copia
