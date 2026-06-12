@@ -69,20 +69,28 @@
             color: var(--bg-color);
         }
 
-        #footer-propina {
-            position: fixed;
-            bottom: 20px;
-            opacity: 0;
-            transition: opacity 2s;
-        }
+       
     </style>
 </head>
 <body oncontextmenu="return false;"> <!-- Bloqueo clic derecho -->
 
-    <div id="canvas">
-        <button id="btn-iniciar" onclick="comenzarExperiencia()">ENTRAR AL BUCLE</button>
-        <div id="contenedor-frases"></div>
-        <div id="diagnostico"></div>
+    <div id="pantalla-inicio" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #000; color: #fff; font-family: 'Georgia', serif; text-align: center; padding: 20px; box-sizing: border-box;">
+    
+        <!-- Título del Dispositivo -->
+        <h1 style="font-size: 2.5rem; font-weight: 300; letter-spacing: 0.15em; margin-bottom: 10px; text-transform: uppercase; color: #e0e0e0;">
+            Tempus orbis
+        </h1>
+        
+        <!-- Descripción Conceptual Breve -->
+        <p style="font-size: 1rem; font-style: italic; font-weight: 300; color: #888; margin-bottom: 40px; letter-spacing: 0.05em;">
+            Tú eres este instante.
+        </p>
+        
+        <!-- Tu Botón Original -->
+        <button onclick="iniciarBucle()" style="background: transparent; border: 1px solid #fff; color: #fff; padding: 12px 24px; font-size: 0.9rem; letter-spacing: 0.2em; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;">
+            Entrar al bucle
+        </button>
+
     </div>
 
     <script>
