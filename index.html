@@ -60,6 +60,31 @@
         .bruma {
             filter: blur(8px);
         }
+
+        /* ==========================================================================
+       DISEÑO RESPONSIVO PARA PANTALLAS PEQUEÑAS (MÓVILES)
+       ========================================================================== */
+        @media (max-width: 768px) {
+            /* Ajustamos el contenedor principal para que tenga un margen de seguridad a los lados */
+            body {
+                padding: 0 20px;
+                box-sizing: border-box;
+            }
+        
+            /* Compactamos sutilmente las frases sembradas en el celular */
+            .frase-sembrada {
+                font-size: 0.8rem;         /* Letra un poco más pequeña pero perfectamente legible */
+                line-height: 1.35;         /* Interlineado ligeramente más cerrado */
+                margin-bottom: 0.9rem;     /* Reducimos el aire entre frases para ganar espacio vertical */
+            }
+        
+            /* Ajustamos el remate final para que no quede apretado abajo */
+            #diagnostico {
+                margin-top: 1.8rem;        /* Separación armónica respecto al bloque de texto */
+                font-size: 0.85rem;        /* Tamaño equilibrado para la Revelación */
+            }
+        }
+    
     </style>
 </head>
 <body oncontextmenu="return false;"> <div id="pantalla-inicio" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; background-color: #000; color: #fff; font-family: 'Georgia', serif; text-align: center; padding: 20px; box-sizing: border-box; position: absolute; top: 0; left: 0; z-index: 10;">
